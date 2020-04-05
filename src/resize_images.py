@@ -49,5 +49,5 @@ def crop_and_resize_images(path, new_path, img_size):
 
 if __name__ == '__main__':
     start_time = time.time()
-    crop_and_resize_images(path='/NAS/NIH_chest/ChestXray-NIHCC/images/', new_path='../data/resized-256/', img_size=256)
+    crop_and_resize_images(path='/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/images/imagesK3/', new_path='/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/data/resized-256/', img_size=256)
     print("Seconds: ", time.time() - start_time)

@@ -17,7 +17,7 @@ def get_lst_images(file_path):
 
 
 if __name__ == '__main__':
-    data = pd.read_csv("../data/Data_Entry_2017.csv")
+    data = pd.read_csv("/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/data/Data_Entry_2017.csv")
     sample = os.listdir('../data/resized-256/')
 
     sample = pd.DataFrame({'Image Index': sample})
