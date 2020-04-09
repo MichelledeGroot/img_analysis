@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import time
+import datetime
 from keras.callbacks import EarlyStopping
 from keras.callbacks import TensorBoard
 from keras.layers import Dense, Activation, Flatten, Dropout
@@ -167,7 +169,7 @@ def cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, bat
               verbose=1,
               validation_split=0.2,
               class_weight='auto',
-              callbacks=[stop, tensor_board]
+              callbacks=[tensor_board]
               )
     return model
 
@@ -195,6 +197,7 @@ if __name__ == '__main__':
     print("Splitting data into test/ train datasets")
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+
     print("Reshaping Data")
     X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, channels)
     X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, channels)
@@ -216,12 +219,15 @@ if __name__ == '__main__':
     print("y_train Shape: ", y_train.shape)
     print("y_test Shape: ", y_test.shape)
 
-
+    start_time_train = time.time()
     model = cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, batch_size, nb_classes, nb_gpus)
+    print("Train time: " , str(datetime.timedelta(seconds=time.time() - start_time_train)))
 
     print("Predicting")
+    start_time_predict = time.time()
     y_pred = model.predict(X_test)
-
+    print("Predicting time: ", str(datetime.timedelta(seconds=time.time() - start_time_predict)))
+    
     y_test = np.argmax(y_test, axis=1)
     y_pred = np.argmax(y_pred, axis=1)
 
