@@ -72,4 +72,6 @@ if __name__ == '__main__':
             print("Number of images for : " + disease + " is " + str(number_of_images))
     except pandas.errors.emptydataerror:
         print("Csv file is empty, load new csv.")
-
+    except FileNotFoundError as e:
+        print("Path to file is incorrect.")
+        exit(1)
