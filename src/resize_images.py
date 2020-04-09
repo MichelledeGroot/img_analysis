@@ -3,6 +3,8 @@ import os
 import time
 import sys
 
+images_k3 = '/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/images/imagesK3/'
+resized_images ='/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/data/resized-256/'
 
 def create_directory(directory):
     """
@@ -31,7 +33,10 @@ def crop_and_resize_images(path, new_path, img_size):
         All images cropped, resized, and saved to the new folder.
     """
     create_directory(new_path)
-    dirs = [l for l in os.listdir(path) if l != '.DS_Store']
+    try:
+        dirs = [l for l in os.listdir(path) if l != '.DS_Store']
+    except FileNotFoundError as e:
+        print("Path with images not found: " + images_k3)
     # total = 0
 
     for item in dirs:
@@ -49,5 +54,5 @@ def crop_and_resize_images(path, new_path, img_size):
 
 if __name__ == '__main__':
     start_time = time.time()
-    crop_and_resize_images(path='/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/images/imagesK3/', new_path='/home/minor-g1/ImageAnalysis_MJSS/img_analysis_MJSS/data/resized-256/', img_size=256)
+    crop_and_resize_images(path=images_k3, new_path=resized_images, img_size=256)
     print("Seconds: ", time.time() - start_time)
