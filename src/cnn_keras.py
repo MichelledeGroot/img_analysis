@@ -14,6 +14,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+
 def split_data(X, y, test_data_size):
     '''
     Split data into test and training datasets.
@@ -43,6 +44,7 @@ def reshape_data(arr, img_rows, img_cols, channels):
         Reshaped array of NumPy arrays.
     '''
     return arr.reshape(arr.shape[0], img_rows, img_cols, channels)
+
 
 def cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, batch_size, nb_classes, nb_gpus):
     '''
@@ -142,15 +144,15 @@ def cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, bat
 
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
-	
+
     try:
         model = multi_gpu_model(model, gpus=nb_gpus, cpu_merge=False)
         print("Training using multiple GPUs..")
-         
+
     except:
         model = model
         print("Training using single GPU or CPU..")
-    	
+
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
@@ -173,6 +175,7 @@ def cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, bat
               )
     return model
 
+
 if __name__ == '__main__':
 
     batch_size = 32
@@ -185,8 +188,23 @@ if __name__ == '__main__':
     kernel_size = (2, 2)
 
     # Import data
-    labels = pd.read_csv("../data/sample_labels.csv")
-    X = np.load("../data/X_sample.npy")
+    try:
+        labels = pd.read_csv("../data/sample_labels.csv")
+    except IOError as e:
+        print(f"Labelfile not found"
+              f"stacktrace: {e}")
+    except ValueError as e:
+        print(f"Labelfile content not readable by pandas"
+              f"stacktrace: {e}")
+
+    try:
+        X = np.load("../data/X_sample.npy")
+    except IOError as e:
+        print(f"numpy input file does not exist or cannot be read."
+              f"stacktrace: {e}")
+    except ValueError as e:
+        print(f"The numpy file contains an object array, but allow_pickle=False given."
+              f"stacktrace: {e}")
 
     y = labels.Finding_Labels
     # y = np.array(pd.get_dummies(y))
@@ -196,7 +214,6 @@ if __name__ == '__main__':
 
     print("Splitting data into test/ train datasets")
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
 
     print("Reshaping Data")
     X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, channels)
@@ -221,13 +238,13 @@ if __name__ == '__main__':
 
     start_time_train = time.time()
     model = cnn_model(X_train, y_train, kernel_size, nb_filters, channels, nb_epoch, batch_size, nb_classes, nb_gpus)
-    print("Train time: " , str(datetime.timedelta(seconds=time.time() - start_time_train)))
+    print("Train time: ", str(datetime.timedelta(seconds=time.time() - start_time_train)))
 
     print("Predicting")
     start_time_predict = time.time()
     y_pred = model.predict(X_test)
     print("Predicting time: ", str(datetime.timedelta(seconds=time.time() - start_time_predict)))
-    
+
     y_test = np.argmax(y_test, axis=1)
     y_pred = np.argmax(y_pred, axis=1)
 
